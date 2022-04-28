@@ -27,7 +27,7 @@ public class FileUploadController {
 		fos.write(file.getBytes());
 		fos.close();
 		
-		System.out.println("Please wait 10 secont for data preparation...");
+		System.out.println("Please wait a secont for data preparation...");
 		TimeUnit.SECONDS.sleep(1);
 		
 		  String Host = "localhost"; 
@@ -45,9 +45,6 @@ public class FileUploadController {
 		  catch (Exception e) {
 		  System.out.println("Error executing " + command + e.toString());
 		  }	
-
 		return new ResponseEntity<Object>("The File Uploaded Successfully", HttpStatus.OK);		
-	}	
-
-	
+	}		
 }
