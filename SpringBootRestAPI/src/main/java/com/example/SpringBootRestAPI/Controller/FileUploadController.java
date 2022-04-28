@@ -15,11 +15,27 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadController {
 	
 	@Value("${file.upload-dir}")
-	String FILE_DIRECTORY;	
-		
+	String FILE_DIRECTORY;		
+	@Value("${mongoImportPath}")
+	String mongoImportPath;			
+	@Value("${tableName}")
+	String tableName;		
+	@Value("${dbName}")
+	String dbName;		
+	@Value("${Host}")
+	String Host;		
+	@Value("${port}")
+	String Port;		
+	@Value("${warningMessageWait}")
+	String warningMessageWait;	
+	@Value("${warningMessageUploadedDb}")
+	String warningMessageUploadedDb;	
+	@Value("${warningMessageUploaded}")
+	String warningMessageUploaded;	
+	
 	@PostMapping("/uploadFile")
 	public ResponseEntity<Object> fileUpload(@RequestParam("File") MultipartFile file) throws IOException, InterruptedException{
-		File newFile = new File("PostmanFiles");
+		File newFile = new File(FILE_DIRECTORY);
 		newFile.mkdir();
 		File myFile = new File(FILE_DIRECTORY+file.getOriginalFilename());
 		myFile.createNewFile();
@@ -27,24 +43,18 @@ public class FileUploadController {
 		fos.write(file.getBytes());
 		fos.close();
 		
-		System.out.println("Please wait a secont for data preparation...");
+		System.out.println(warningMessageWait);
 		TimeUnit.SECONDS.sleep(1);
-		
-		  String Host = "localhost"; 
-		  String Port = "27017"; 
-		  String DB = "Veribel";
-		  String CollectionName = "xrtest"; 
-		  String FileName = "PostmanFiles\\"+file.getOriginalFilename();
-		  		  
+				  		  
 		  // Without Credential 
-		  String command = "C:\\Program Files\\MongoDB\\Tools\\100\\bin\\mongoimport.exe --host " + Host + " --port " + Port + " --db " + DB + " --collection " + CollectionName + "  --headerline --type=csv --file "+ FileName;
+		  String command = mongoImportPath + "mongoimport.exe --host " + Host + " --port " + Port + " --db " + dbName + " --collection " + tableName + "  --headerline --type=csv --file "+ FILE_DIRECTORY+file.getOriginalFilename();
 		 
 		  try { Process process = Runtime.getRuntime().exec(command);
-		  System.out.println("Imported csv into Database"); 
+		  System.out.println(warningMessageUploadedDb); 
 		  } 
 		  catch (Exception e) {
-		  System.out.println("Error executing " + command + e.toString());
+		  System.out.println(command + e.toString());
 		  }	
-		return new ResponseEntity<Object>("The File Uploaded Successfully", HttpStatus.OK);		
+		return new ResponseEntity<Object>(warningMessageUploaded, HttpStatus.OK);		
 	}		
 }
